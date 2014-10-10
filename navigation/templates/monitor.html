@@ -1,0 +1,77 @@
+<html>
+<head><title>Just Search,Powered By Ezio</title></head>
+<body>
+<h3>服务器状态 单位:G</h3>
+<p><a href="/navigation/">返回主页</a></p>
+<table border ='1'>
+<tr>
+    <th>主机名</th>
+    <th>IP地址</th>
+    <th>内存</th>
+    <th>C盘总大小</th>
+    <th>C盘空闲</th>
+    <th>D盘总大小</th>
+    <th>D盘空闲</th>
+    <th>E盘总大小</th>
+    <th>E盘空闲</th>
+    <th>F盘总大小</th>
+    <th>F盘空闲</th>
+    <th>G盘总大小</th>
+    <th>G盘空闲</th>
+    <th>H盘总大小</th>
+    <th>H盘空闲</th>
+    <th>I盘总大小</th>
+    <th>I盘空闲</th>
+    <th>在线</th>
+</tr>
+{% for i in serverinfor %}
+    <tr>
+        <td>{{i.hostname}}</td>
+        <td>{{i.ip}}</td>
+        <td>{{i.memory}}G</td>
+        <td> {{i.c_total|default_if_none:""}}</div></td>
+        <td>{{i.c_free|default_if_none:""}}</td>
+        <td>{{i.d_total|default_if_none:""}}</td>
+        <td>{{i.d_free|default_if_none:""}}</td>
+        <td>{{i.e_total|default_if_none:""}}</td>
+        <td>{{i.e_free|default_if_none:""}}</td>
+        <td>{{i.f_total|default_if_none:""}}</td>
+        <td>{{i.f_free|default_if_none:""}}</td>
+        <td>{{i.g_total|default_if_none:""}}</td>
+        <td>{{i.g_free|default_if_none:""}}</td>
+        <td>{{i.h_total|default_if_none:""}}</td>
+        <td>{{i.h_free|default_if_none:""}}</td>
+        <td>{{i.i_total|default_if_none:""}}</td>
+        <td>{{i.i_free|default_if_none:""}}</td>
+        <td>{% if i.ifonline == "Offline" %} <div style="color:#F00">{% endif %}{{i.ifonline}}</td>
+    </tr>
+{% endfor %}
+</table> 
+<h3>服务器剩余空间状态  单位:G</h3>
+<table border ='1'>
+<tr>
+    <th>主机名</th>
+    <th>IP地址</th>
+    <th>C盘使用百分比</th>
+    <th>D盘使用百分比</th>
+    <th>E盘使用百分比</th>
+    <th>F盘使用百分比</th>
+    <th>G盘使用百分百</th>
+    <th>H盘使用百分百</th>
+    <th>I盘使用百分百</th>
+</tr>
+{% for i in serverinfor %}
+    <tr>
+        <td>{{i.hostname}}</td>
+        <td>{{i.ip}}</td>
+        <td>{% if i.c_usage > 90  %} <div style="color:#F00">{% endif %}{{i.c_usage|default:''}}</td>
+        <td>{% if i.d_usage > 90  %} <div style="color:#F00">{% endif %}{{i.d_usage|default:''}}</td>
+        <td>{% if i.e_usage > 90  %} <div style="color:#F00">{% endif %}{{i.e_usage|default:''}}</td>
+        <td>{% if i.f_usage > 90  %} <div style="color:#F00">{% endif %}{{i.f_usage|default:''}}</td>
+        <td>{% if i.g_usage > 90  %} <div style="color:#F00">{% endif %}{{i.g_usage|default:''}}</td>
+        <td>{% if i.h_usage > 90  %} <div style="color:#F00">{% endif %}{{i.h_usage|default:''}}</td>
+        <td>{% if i.i_usage > 90  %} <div style="color:#F00">{% endif %}{{i.i_usage|default:''}}</td> 
+    </tr>
+{% endfor %}          
+</body>
+</html>

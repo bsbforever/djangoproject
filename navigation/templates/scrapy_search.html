@@ -1,0 +1,21 @@
+<html>
+<head><title>Just Search,Powered By Ezio</title></head>
+<body>
+<h3>搜索结果</h3>
+<p><a href="/navigation/">返回主页</a></p>
+<p><a href="/navigation/scrapy/">返回上层</a></p>
+<table border ='1'>
+<tr>
+    <th>名称</th>
+    <th>类型</th>
+    <th>链接</th>
+</tr>
+{% for i in searchinfo %}
+    <tr>
+        <td>{{i.title}}</td>
+        <td>{{i.type}}</td>
+        <td><a href={{i.link}} target="_blank">{{i.link}}</a></td>
+    </tr>
+{% endfor %}
+</body>
+</html>

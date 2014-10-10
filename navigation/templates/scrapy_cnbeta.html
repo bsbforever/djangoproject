@@ -1,0 +1,42 @@
+<html>
+<head><title>Just Search,Powered By Ezio</title></head>
+<body>
+<h3>CnBeta</h3>
+<p><a href="/navigation/scrapy">返回上层</a></p>
+<form action="/navigation/search/" method="get">
+        <input type="text" name="searchname">
+        <input type="hidden" name="formname" value={{formname}}>
+        <input type="hidden" name="search_column" value='title'>
+        <input type="submit" value="Search">
+    </form>
+<table border ='1'>
+<tr>
+    <th>日期</th>
+    <th>标题</th>
+    <th>链接</th>
+</tr>
+{% for i in cnbetapage %}
+    <tr>
+        <td>{{i.date}}</td>
+        <td>{{i.title}}</td>
+        <td><a href={{i.link}} target="_blank">{{i.link}}</a></td>
+    </tr>
+{% endfor %}
+</table>
+<div class="pagination">
+    <span class="step-links">
+        {% if cnbetapage.has_previous %}
+            <a href="?page={{ cnbetapage.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ cnbetapage.number }} of {{ cnbetapage.paginator.num_pages }}.
+        </span>
+
+        {% if cnbetapage.has_next %}
+            <a href="?page={{ cnbetapage.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+</body>
+</html> 

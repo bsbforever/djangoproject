@@ -1,0 +1,145 @@
+# -*-coding:utf-8 -*-
+from django.shortcuts import render
+from django.shortcuts import render_to_response
+import MySQLdb
+from navigation.models import path
+from navigation.models import serverinfo
+# Create your views here.
+from django.http import HttpResponse
+from django import template
+from form import *
+from django.http import HttpResponseRedirect     
+# Create your views here.
+
+def check_server(ipaddress,port):
+    import socket
+    s=socket.socket()
+    try:
+        s.connect((ipaddress,port))
+        return True
+    except socket.error,e:
+        return False
+
+def navigation (request):
+    ipaddress=str(HttpResponse(request.META['REMOTE_ADDR'])).split('utf-8')[1].strip()
+    result = path.objects.all().order_by('pathname')
+    #pathname=result.pathname
+    #path=result.path
+    dic={'ipaddress':ipaddress,'result':result}    
+    return render_to_response('navigation.html',dic)
+    #return HttpResponse(result)
+def getip(request):
+	ipaddress=str(HttpResponse(request.META['REMOTE_ADDR'])).split('utf-8')[1].strip()
+        return render_to_response('getip.html',{'ipaddress':ipaddress})
+def scanport(request):
+        return render_to_response('scanport.html')
+
+
+def scanresult(request):
+    try:
+        ipaddress  = str(request.GET['ipaddress'])
+        startport  = int(request.GET['startport'])
+        endport  =   int(request.GET['endport'])
+        if startport<=endport:
+            ports=[]
+            for i in range(startport,endport+1):
+                ports.append(i)
+            import socket
+            openedport=[]
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            for port in ports:
+                check = check_server(ipaddress, port)
+                if (check):
+                    openedport.append(port)
+                else: pass
+            dic={'ipaddress':ipaddress,'openedport':openedport}
+            return render_to_response('finalresult.html',dic)
+        else:
+            return HttpResponse('The Endport must greater than startport')
+    except Exception,e:
+        #return HttpResponse('Please Fill all the blanks below or enter right value')
+        return HttpResponse(e)
+
+
+
+
+
+def monitor(request):
+    import os
+    import re
+    from monitor.getinfo import *
+    ip=open(r'/root/ipaddress.txt','r')
+    info={}
+    result=[]
+    alert=''
+    for ipaddress in ip:
+        ipaddress=ipaddress.strip()
+        diskcount=disktype(ipaddress)
+        labelname=disklabel(ipaddress,diskcount)
+        unitsize=diskunits(ipaddress,diskcount)
+        disksize=disktotalsize(ipaddress,diskcount)
+        diskused = diskusedsize(ipaddress,diskcount)
+        diskfailures=diskfailuresnum(ipaddress,diskcount)
+        leng=len(diskcount)
+        k=1
+        for k in range(1, leng + 1):
+            totalspace=(int(unitsize[k-1][0]) * int(disksize[k-1][0]))/1024/1024/1024
+            #print 'The Total Size of  '+ labelname[k-1][0] +' Dirver on '+ipaddress+' is ' + str(totalspace)+' G'
+            freespace = (int(unitsize[k - 1][0]) * int(disksize[k - 1][0])) / 1024 / 1024 / 1024 - (int(unitsize[k - 1][0]) * int(diskused[k - 1][0])) / 1024 / 1024 / 1024
+           # print 'The Free Space of  '+ labelname[k-1][0] +' Dirver on '+ ipaddress+' is  ' + str(freespace)+' G'
+            #diskusage=float(totalspace-freespace)/float(totalspace)*100
+            #alertcontent='Be Careful, The Usage of '+ labelname[k-1][0]+' Driver on '+ipaddress+' is '+ str(diskusage)+' Used'
+        #alert=result(ipaddress,diskcount,alert)
+            info['ipaddress']=ipaddress
+            info['labelname']=labelname[k-1]
+            info['totalspace']=int(totalspace)
+            info['freespace']=int(freespace)
+            
+            #result.append({'ipaddress':ipaddress,'labelname':labelname[k-1],'totalspace':int(totalspace),'freespace':int(freespace)})
+    return render_to_response('monitor.html',{'memory':result})
+
+
+def finderindex(request):
+    return render_to_response('finderindex.html')
+def finder(request):
+    #ipaddress = 'ipaddress' in request.POST
+    ipaddress = request.GET['ipaddress']
+    username = request.POST.get('username', False)
+    password = request.POST.get('password', False)
+    #return render_to_response('finalresult.html')
+    #return HttpResponse('ss')
+    #return render_to_response('finder.html')
+    return HttpResponse(ipaddress)
+
+def addcontent(request):
+    if request.method == 'POST': # If the form has been submitted...
+        # ContactForm was defined in the previous section
+        form = addpath(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            form.save()
+            # Process the data in form.cleaned_data
+            # ...
+            return HttpResponseRedirect('/navigation/') # Redirect after POST
+    else:
+        form = addpath() # An unbound form
+
+    return render(request, 'addcontent.html', {
+        'form': form,
+    })
+
+def contact(request):
+    if request.method == 'POST': # If the form has been submitted...
+        # ContactForm was defined in the previous section
+        form = ContactForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # Process the data in form.cleaned_data
+            # ...
+            return HttpResponseRedirect('/navigation/') # Redirect after POST
+    else:
+        form = ContactForm() # An unbound form
+
+    return render(request, 'contact.html', {
+        'form': form,
+    }) 
+
+

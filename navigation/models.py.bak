@@ -1,0 +1,49 @@
+# coding:utf8
+from django.db import models
+
+
+# Create your models here.
+
+class Diskusage(models.Model):
+    Label= models.CharField(max_length=30,primary_key=True)
+    Total = models.DecimalField(max_digits=7, decimal_places=2)
+    Used = models.DecimalField(max_digits=7, decimal_places=2)
+    Free = models.DecimalField(max_digits=7, decimal_places=2)
+
+class Disklabel(models.Model):
+    #Label = models.CharField(max_length=10)
+    Label = models.ForeignKey(Diskusage,primary_key=True)
+
+class Infor(models.Model):
+    ip=models.GenericIPAddressField(primary_key=True)
+    hostname=models.CharField(max_length=30)
+    memory=models.BigIntegerField()
+    diskinfo=models.ForeignKey(Disklabel)
+
+class serverinfo(models.Model):
+    ip=models.GenericIPAddressField(primary_key=True)
+    hostname=models.CharField(max_length=30,blank=True,null=True)
+    memory=models.BigIntegerField(blank=True,null=True)
+    c_total=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    c_free=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    d_total=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    d_free=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    e_total=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    e_free=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    f_total=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    f_free=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    g_total=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    g_free=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    h_total=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    h_free=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    i_total=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    i_free=models.DecimalField(max_digits=7, decimal_places=2,blank=True,null=True)
+    def __unicode__(self):
+       return self.name
+
+
+class path(models.Model):
+    pathname=models.CharField(max_length=30,primary_key=True)
+    path=models.CharField(max_length=300)
+    def __unicode__(self):
+        return self.name

@@ -1,0 +1,30 @@
+<html>
+<title>Scanport Result</title>
+<body>
+{% if openedport %}
+        <p>The ScanResult is:</p>
+        <table border="1">
+        <tr>
+            <th>IP Address</th>
+            <th>Port</th>
+            <th>Statics</th>
+            
+        {% for i in openedport %}
+            <tr>
+                <td>{{ipaddress}}</td>
+                <td>{{i}}</td>
+                <td>Opened</td>
+        	</tr>
+        {% endfor %}
+        </table>
+{%else%}
+        There is no port opened  on {{ipaddress}} which you  inputed !
+{%endif%}
+
+</body>
+</html>
+
+
+
+
+
